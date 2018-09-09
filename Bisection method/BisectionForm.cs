@@ -24,7 +24,8 @@ namespace Bisection_method
             progressBar1.Minimum = 0;
             
         }
-        private int v()// проверка на пустоту
+        //да, тут лучше переписать нормально, ео лень.
+        private int v()
         {
             double tol;
             if (tolBox.Text == "")

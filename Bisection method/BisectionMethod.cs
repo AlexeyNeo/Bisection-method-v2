@@ -22,6 +22,11 @@ namespace Bisection_method
             else return 5;
         }
 
+        /// <summary>
+        /// Основной метод расчета
+        /// </summary>
+        /// <param name="model"> </param>
+        /// <returns>BisectionViewModel</returns>
         public BisectionViewModel Calculate(BisectionModel model)
         {
             decimal m;
