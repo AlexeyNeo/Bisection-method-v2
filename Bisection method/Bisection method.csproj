@@ -32,8 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Extreme.Numerics.Net40">
-      <HintPath>..\..\..\..\..\Desktop\Основы разработки и анализа требований ПО\parser\Программный модуль\Parser\Extreme.Numerics.Net40.dll</HintPath>
+    <Reference Include="Extreme.Numerics.Net40, Version=5.1.14287.0, Culture=neutral, PublicKeyToken=9e513770f58567b2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Extreme.Numerics.Net40.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +56,7 @@
     <Compile Include="BisectionForm.Designer.cs">
       <DependentUpon>BisectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\BisectionModel.cs" />
     <Compile Include="parser\Calculator.cs" />
     <Compile Include="parser\Computer.cs" />
     <Compile Include="parser\Derivative.cs" />
@@ -88,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Extreme.Numerics.Net40.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

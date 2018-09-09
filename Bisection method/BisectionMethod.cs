@@ -1,21 +1,16 @@
-﻿using parserDecimal.Parser;
+﻿using System;
 using System.Threading;
+using Bisection_method.Model;
+using parserDecimal.Parser;
 
-namespace BisectionMmethod
+namespace Bisection_method
 {
     class Bisection
     {
-        decimal Fa, Fb, a, b, x, m, Fm;
-        double tol;
-        int k = 0;
-        string func;
-        Computer computer = new Computer();
-        public Bisection()
+        readonly Computer _computer = new Computer();
+        private decimal Function(decimal x1, string func)
         {
-        }
-        public decimal Function(decimal x1)
-        {
-            return computer.Compute(func, x1);
+            return _computer.Compute(func, x1);
         }
 
         private int sign(decimal x)
@@ -27,27 +22,33 @@ namespace BisectionMmethod
             else return 5;
         }
 
-        public dynamic Calculate(decimal a, decimal b, string _func, double tol, int k_max)
+        public dynamic Calculate(BisectionModel model)
         {
-            func = _func;
-            Fa = Function(a);
-            Fb = Function(b);
-            if (sign(Fa) == sign(Fb)) { return new { err = "Знаки Fa и Fb  должны быть разными, проверьте диапазон [a, b]" }; }
-            k = 0;
+            int iteration = 0;
+            decimal m;
+            decimal fm;
+            decimal fa = Function(model.PointA, model.Func);
+            decimal fb = Function(model.PointA, model.Func);
+
+            if (sign(fa) == sign(fb)) { return new { err = @"Знаки Fa и Fb  должны быть разными, проверьте диапазон [a, b]" }; }
+            iteration = 0;
 
             do
             {
-                m = a + (b - a) / 2;
-                Fa = Function(a);
-                Fm = Function(m);
-                if (sign(Fa) == sign(Fm)) { a = m; }
-                else { b = m; }
-                k++;
+                m = model.PointA + (model.PointB - model.PointA) / 2;
+                fa = Function(model.PointA, model.Func);
+                fm = Function(model.PointA, model.Func);
+                if (sign(fa) == sign(fm))
+                    model.PointA = m;
+                else
+                    model.PointB = m;
+                
+                iteration++;
 
             }
-            while (((decimal)b - a) > (decimal)tol && k < k_max);
+            while (((decimal)model.PointB- model.PointB) > (decimal)model.Tol && iteration < model.IterationMax);
             Thread.Sleep(50);
-            return new { X = m, fx = Fm, iteration = k, Abc = b - a, err = "" };
+            return new { X = m, fx = fm, iteration = iteration, Abc = model.PointB - model.PointB, err = "" };
         }
 
     }
