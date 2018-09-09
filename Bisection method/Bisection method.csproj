@@ -57,6 +57,7 @@
       <DependentUpon>BisectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\BisectionModel.cs" />
+    <Compile Include="Model\BisectionViewModel.cs" />
     <Compile Include="parser\Calculator.cs" />
     <Compile Include="parser\Computer.cs" />
     <Compile Include="parser\Derivative.cs" />

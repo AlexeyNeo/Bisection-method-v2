@@ -7,5 +7,6 @@
          public string Func { get; set; }
          public double Tol { get; set; }
          public int IterationMax { get; set; }
+       
     }
 }

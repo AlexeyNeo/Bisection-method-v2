@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.searchButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxf = new System.Windows.Forms.ComboBox();
@@ -54,7 +53,6 @@
             this.labelx = new System.Windows.Forms.Label();
             this.x1uotFBox = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.labelerr = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -343,10 +341,6 @@
             this.progressBar1.TabIndex = 6;
             this.progressBar1.Visible = false;
             // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // labelerr
             // 
             this.labelerr.AutoSize = true;
@@ -402,7 +396,6 @@
         private System.Windows.Forms.Label labelx;
         public System.Windows.Forms.TextBox x1uotFBox;
         public System.Windows.Forms.ProgressBar progressBar1;
-        public System.Windows.Forms.Timer timer1;
         public int count;
         private System.Windows.Forms.Label labelfx;
         public System.Windows.Forms.TextBox fx1outBox;

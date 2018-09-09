@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Dynamic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Bisection_method.Model;
 
@@ -14,19 +14,15 @@ namespace Bisection_method
         {
             InitializeComponent();
         }
-        private int k = 0;
-        private int time = 0;
-        private string fx;
+        private int _k = 0;
+        private string _fx;
 
-        public int K { get => k; set => k = value; }
-        public int Time { get => time; set => time = value; }
-        public string Fx { get => fx; set => fx = value; }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //настройки прогресс бара
             progressBar1.Minimum = 0;
-            progressBar1.Maximum = 100;
+            
         }
         private int v()// проверка на пустоту
         {
@@ -71,50 +67,60 @@ namespace Bisection_method
             
             return 1;
         }
-        private void button1_Click(object sender, EventArgs e)
+
+        private async void button1_Click(object sender, EventArgs e)
         {
             try
             {
                 labelerr.Text = "";
-                Fx = comboBoxf.Text;
+                _fx = comboBoxf.Text;
                 if (v() == 0)
-                { }
+                {
+                }
                 else
                 {
-                    BisectionModel model = new BisectionModel
+                    var model = new BisectionModel
                     {
-                        Func = Fx,
+                        Func = _fx,
                         Tol = double.Parse(tolBox.Text),
                         IterationMax = int.Parse(k_maxBox.Text),
-                        PointA = Decimal.Parse(aBox.Text),
-                        PointB = Decimal.Parse(bBox.Text)
+                        PointA = decimal.Parse(aBox.Text),
+                        PointB = decimal.Parse(bBox.Text)
                     };
                     progressBar1.Visible = true;
-                        Stopwatch stopWatch = new Stopwatch();
+                    progressBar1.Maximum = model.IterationMax;
 
-                        stopWatch.Start();
-                        ////данные для входного интерфейса.
-                        Bisection bisection = new Bisection();
-                       // var result = Task.Run(()=> bisection.Calculate(model)).Result;
-                    var result = bisection.Calculate(model);
-                        stopWatch.Stop();
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
 
-                        TimeSpan ts = stopWatch.Elapsed;
+                    var bisection = new Bisection();
 
-                    if (result.err != "")
-                        MessageBox.Show(result.err);
+                    bisection.ProgressBarIncrement += ProgressBarIncrement;
+
+                    var result = await Task.Run(()=> bisection.Calculate(model));
+
+                    stopWatch.Stop();
+
+                    var ts = stopWatch.Elapsed;
+
+                    if (result.Error != "")
+                    {
+                        MessageBox.Show(result.Error);
+                    }
                     else
                     {
                         Sec.Text = ts.TotalSeconds.ToString("0.0");
-                        fx1outBox.Text = result.fx.ToString(" 0e0");
-                        x1uotFBox.Text = result.X.ToString();
+                        fx1outBox.Text = result.Fx.ToString(" 0e0");
+                        x1uotFBox.Text = result.X.ToString(CultureInfo.InvariantCulture);
                         outTolBox.Text = result.Abc.ToString("0e0");
-                        countinerBox.Text = result.iteration.ToString();
+                        countinerBox.Text = result.Iteration.ToString();
 
-
-                        //if (test.iteration == k_max && test.Abc > (decimal)tol)
-                        //    labelerr.Text = @"Решение с заданной точностью \n за K_Max(" + k_max+")итераций не удалось найти.";
+                        if (result.Iteration == model.IterationMax && result.Abc > (decimal)model.Tol)
+                            labelerr.Text = @"Решение с заданной точностью \n за K_Max(" + model.IterationMax +
+                                            @")итераций не удалось найти.";
                     }
+                    progressBar1.Value = 0;
+                    bisection.ProgressBarIncrement -= ProgressBarIncrement;
                 }
             }
 
@@ -123,33 +129,33 @@ namespace Bisection_method
                 MessageBox.Show(@"Не удалось распознать F. " + ex.Message);
             }
         }
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                labelerr.Text = "";
-                Fx = comboBoxf.Text;
-                if (v() == 0)
-                { }
-                else
-                {
-                    progressBar1.Visible = true;
-                    timer1.Start();
-                    Decimal a = Decimal.Parse(aBox.Text);
-                    Decimal b = Decimal.Parse(bBox.Text);
-                    double tol = double.Parse(tolBox.Text);
-                    int k_max = int.Parse(k_maxBox.Text);
+        //private void button1_Click_1(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        labelerr.Text = "";
+        //        Fx = comboBoxf.Text;
+        //        if (v() == 0)
+        //        { }
+        //        else
+        //        {
+        //            progressBar1.Visible = true;
+        //            timer1.Start();
+        //            Decimal a = Decimal.Parse(aBox.Text);
+        //            Decimal b = Decimal.Parse(bBox.Text);
+        //            double tol = double.Parse(tolBox.Text);
+        //            int k_max = int.Parse(k_maxBox.Text);
 
-                    //      if (obj.iteration() == k_max && obj.absab() > (decimal)tol) labelerr.Text = "Решение с данной точностью за K_Max \n не удалось найти.";
+        //            //      if (obj.iteration() == k_max && obj.absab() > (decimal)tol) labelerr.Text = "Решение с данной точностью за K_Max \n не удалось найти.";
 
-                }
-            }
+        //        }
+        //    }
 
-            catch (Exception ex)
-            {
-                MessageBox.Show(@"Не удалось распознать F. " + ex.Message);
-            }
-        }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(@"Не удалось распознать F. " + ex.Message);
+        //    }
+        //}
         private void aBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             char number = e.KeyChar;// перевод в ASCII
@@ -196,27 +202,19 @@ namespace Bisection_method
             fx1outBox.Text = "";
             outTolBox.Text = "";
             progressBar1.Value = 0;
-            timer1.Stop();
             progressBar1.Visible = false;
             Sec.Text = "";
             labelerr.Text = "";
+        
         }
-        private void timer1_Tick(object sender, EventArgs e)
-        {
 
-            if (progressBar1.Value < 100)
-                progressBar1.Increment(+20);
-            else
+        private void ProgressBarIncrement(int i)
+        {
+            Action action = () =>
             {
-                Time++;
-                if (Time == 6)
-                {
-                    timer1.Stop();
-                    progressBar1.Visible = false;
-                    Time = 0;
-                    progressBar1.Value = 0;
-                }
-            }
+                progressBar1.Value += i;
+            };
+            Invoke(action);
         }
 
         #region Not Used

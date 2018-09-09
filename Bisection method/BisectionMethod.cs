@@ -7,6 +7,7 @@ namespace Bisection_method
 {
     class Bisection
     {
+         public event Action<int> ProgressBarIncrement; 
         readonly Computer _computer = new Computer();
         private decimal Function(decimal x1, string func)
         {
@@ -15,40 +16,48 @@ namespace Bisection_method
 
         private int sign(decimal x)
         {
-            
-            if (x > (decimal)0) { return 1; }
-            else if (x == (decimal)0) { return 0; }
-            else if (x < (decimal)0) { Thread.Sleep(1); return -1; }
+            if (x > 0) { return 1; }
+            else if (x == 0) { return 0; }
+            else if (x < 0) { Thread.Sleep(1); return -1; }
             else return 5;
         }
 
-        public dynamic Calculate(BisectionModel model)
+        public BisectionViewModel Calculate(BisectionModel model)
         {
-            int iteration = 0;
             decimal m;
             decimal fm;
-            decimal fa = Function(model.PointA, model.Func);
-            decimal fb = Function(model.PointA, model.Func);
+            var fa = Function(model.PointA, model.Func);
+            var fb = Function(model.PointB, model.Func);
 
-            if (sign(fa) == sign(fb)) { return new { err = @"Знаки Fa и Fb  должны быть разными, проверьте диапазон [a, b]" }; }
-            iteration = 0;
+            if (sign(fa) == sign(fb))
+                return new BisectionViewModel {Error = @"Знаки Fa и Fb  должны быть разными, проверьте диапазон [a, b]"};
+
+            var iteration = 0;
 
             do
             {
+                ProgressBarIncrement?.Invoke(1);
                 m = model.PointA + (model.PointB - model.PointA) / 2;
                 fa = Function(model.PointA, model.Func);
-                fm = Function(model.PointA, model.Func);
+                fm = Function(m, model.Func);
                 if (sign(fa) == sign(fm))
                     model.PointA = m;
                 else
                     model.PointB = m;
-                
-                iteration++;
 
-            }
-            while (((decimal)model.PointB- model.PointB) > (decimal)model.Tol && iteration < model.IterationMax);
-            Thread.Sleep(50);
-            return new { X = m, fx = fm, iteration = iteration, Abc = model.PointB - model.PointB, err = "" };
+                iteration++;
+            } while (model.PointB - model.PointA > (decimal) model.Tol && iteration < model.IterationMax);
+
+            if(iteration < model.IterationMax)
+                ProgressBarIncrement?.Invoke(model.IterationMax - iteration);
+
+            return new BisectionViewModel
+            {
+                X = m,
+                Iteration = iteration,
+                Abc = model.PointB - model.PointB,
+                Fx = fm
+            };
         }
 
     }
