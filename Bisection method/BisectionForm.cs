@@ -74,10 +74,7 @@ namespace Bisection_method
             {
                 labelerr.Text = "";
                 _fx = comboBoxf.Text;
-                if (v() == 0)
-                {
-                }
-                else
+                if (v() != 0)
                 {
                     var model = new BisectionModel
                     {
@@ -87,23 +84,24 @@ namespace Bisection_method
                         PointA = decimal.Parse(aBox.Text),
                         PointB = decimal.Parse(bBox.Text)
                     };
+
                     progressBar1.Visible = true;
                     progressBar1.Maximum = model.IterationMax;
+                    progressBar1.Value = 0;
 
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
 
                     var bisection = new Bisection();
-
+                    
                     bisection.ProgressBarIncrement += ProgressBarIncrement;
 
-                    var result = await Task.Run(()=> bisection.Calculate(model));
+                    var result = await Task.Run(() => bisection.Calculate(model));
 
                     stopWatch.Stop();
-
                     var ts = stopWatch.Elapsed;
 
-                    if (result.Error != "")
+                    if (!string.IsNullOrWhiteSpace(result.Error))
                     {
                         MessageBox.Show(result.Error);
                     }
@@ -115,11 +113,11 @@ namespace Bisection_method
                         outTolBox.Text = result.Abc.ToString("0e0");
                         countinerBox.Text = result.Iteration.ToString();
 
-                        if (result.Iteration == model.IterationMax && result.Abc > (decimal)model.Tol)
+                        if (result.Iteration == model.IterationMax && result.Abc > (decimal) model.Tol)
                             labelerr.Text = @"Решение с заданной точностью \n за K_Max(" + model.IterationMax +
                                             @")итераций не удалось найти.";
                     }
-                    progressBar1.Value = 0;
+
                     bisection.ProgressBarIncrement -= ProgressBarIncrement;
                 }
             }
