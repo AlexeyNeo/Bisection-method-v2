@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Bisection_method.Model;
 
 namespace Bisection_method
 {
-
     public partial class Main : Form
     {
         public Main()
         {
             InitializeComponent();
         }
+
         private int _k = 0;
         private string _fx;
 
@@ -22,8 +22,8 @@ namespace Bisection_method
         {
             //настройки прогресс бара
             progressBar1.Minimum = 0;
-            
         }
+
         //да, тут лучше переписать нормально, ео лень.
         private int v()
         {
@@ -47,12 +47,14 @@ namespace Bisection_method
                 }
             if (a >= b)
             {
-                MessageBox.Show(@"Вы неверно указали диапазон поиска, левая граница \n должна быть меньше правой (a < b).");
+                MessageBox.Show(
+                    @"Вы неверно указали диапазон поиска, левая граница \n должна быть меньше правой (a < b).");
                 return 0;
             }
             if (comboBoxf.Text == "")
             {
-                MessageBox.Show(@"Поле 'F' не может быть пустым, выберите элемент из списка \n или напишите вручную формулу.");
+                MessageBox.Show(
+                    @"Поле 'F' не может быть пустым, выберите элемент из списка \n или напишите вручную формулу.");
                 return 0;
             }
             if (tolBox.Text == "")
@@ -64,8 +66,8 @@ namespace Bisection_method
             {
                 MessageBox.Show(@"Введите кол-во итераций.");
                 return 0;
-            }  
-            
+            }
+
             return 1;
         }
 
@@ -94,7 +96,7 @@ namespace Bisection_method
                     stopWatch.Start();
 
                     var bisection = new Bisection();
-                    
+
                     bisection.ProgressBarIncrement += ProgressBarIncrement;
 
                     var result = await Task.Run(() => bisection.Calculate(model));
@@ -128,71 +130,38 @@ namespace Bisection_method
                 MessageBox.Show(@"Не удалось распознать F. " + ex.Message);
             }
         }
-        //private void button1_Click_1(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        labelerr.Text = "";
-        //        Fx = comboBoxf.Text;
-        //        if (v() == 0)
-        //        { }
-        //        else
-        //        {
-        //            progressBar1.Visible = true;
-        //            timer1.Start();
-        //            Decimal a = Decimal.Parse(aBox.Text);
-        //            Decimal b = Decimal.Parse(bBox.Text);
-        //            double tol = double.Parse(tolBox.Text);
-        //            int k_max = int.Parse(k_maxBox.Text);
 
-        //            //      if (obj.iteration() == k_max && obj.absab() > (decimal)tol) labelerr.Text = "Решение с данной точностью за K_Max \n не удалось найти.";
-
-        //        }
-        //    }
-
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(@"Не удалось распознать F. " + ex.Message);
-        //    }
-        //}
         private void aBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            char number = e.KeyChar;// перевод в ASCII
-            if (!Char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101) // если нет в условии, то не выводим символ на экран
-            {
+            var number = e.KeyChar; // перевод в ASCII
+            if (!char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101
+            ) // если нет в условии, то не выводим символ на экран
                 e.Handled = true;
-            }
         }
 
         private void bBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-            char number = e.KeyChar;// перевод в ASCII
-            if (!Char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101) // если нет в условии, то не выводим символ на экран
-            {
+            var number = e.KeyChar; // перевод в ASCII
+            if (!char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101
+            ) // если нет в условии, то не выводим символ на экран
                 e.Handled = true;
-            }
         }
 
         private void tolBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-            char number = e.KeyChar;// перевод в ASCII
-            if (!Char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101) // если нет в условии, то не выводим символ на экран
-            {
+            var number = e.KeyChar; // перевод в ASCII
+            if (!char.IsDigit(number) && number != 8 && number != 45 && number != 43 && number != 44 && number != 101
+            ) // если нет в условии, то не выводим символ на экран
                 e.Handled = true;
-            }
         }
 
         private void k_maxBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-            char number = e.KeyChar;// перевод в ASCII
-            if (!Char.IsDigit(number) && number != 8) // если нет в условии, то не выводим символ на экран
-            {
+            var number = e.KeyChar; // перевод в ASCII
+            if (!char.IsDigit(number) && number != 8) // если нет в условии, то не выводим символ на экран
                 e.Handled = true;
-            }
         }
+
         private void button3_Click(object sender, EventArgs e)
         {
             //сброс полей вывода
@@ -204,101 +173,81 @@ namespace Bisection_method
             progressBar1.Visible = false;
             Sec.Text = "";
             labelerr.Text = "";
-        
         }
 
         private void ProgressBarIncrement(int i)
         {
-            Action action = () =>
-            {
-                progressBar1.Value += i;
-            };
+            Action action = () => { progressBar1.Value += i; };
             Invoke(action);
         }
 
         #region Not Used
-      
+
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void label4_Click(object sender, EventArgs e)
         {
-
         }
 
         private void label3_Click(object sender, EventArgs e)
         {
-
         }
 
         private void countinerBox_TextChanged(object sender, EventArgs e)
         {
-
         }
+
         /* Ниже происходит обработка входного интерфейса      */
         private void fBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void label7_Click(object sender, EventArgs e)
         {
-
         }
 
         private void label8_Click(object sender, EventArgs e)
         {
-
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void bBox_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void comboBox1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
-
         }
+
         #endregion
     }
-
 }
